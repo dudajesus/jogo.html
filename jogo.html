@@ -1,0 +1,252 @@
+<html>
+<head>
+  <title>Jogo da Velha</title>
+  <style>
+    body {
+      background-color: #57068C;
+      font-family: "Arial, sans-serif";
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .title {
+      color: #00FF00;
+      font-size: 100px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px #000000;
+    }
+    .play-button {
+      background-color: #FF9000;
+      color: #FFFFFF;
+      padding: 60px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      animation: pulse 1s infinite;
+      margin-top: 40px;
+      position: relative;
+      font-size: 0;
+    }
+    .play-button::after {
+      content: "\25B6";
+      font-size: 36px;
+      color: #fff9f9;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .start-button {
+      background-color: #00FF00;
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      display: block;
+      margin: 20px auto;
+      animation: pulse 1s infinite;
+    }
+    .start-button span {
+      display: none;
+    }
+    .start-button::before {
+      content: "Iniciar Jogo";
+    }
+    @keyframes pulse {
+      0% {
+        background-color: #FF9000;
+        color: #FFFFFF;
+        transform: scale(1);
+      }
+      50% {
+        background-color: #FF9000;
+        color: #FFFFFF;
+        transform: scale(1.1);
+      }
+      100% {
+        background-color: #FF9000;
+        color: #FFFFFF;
+        transform: scale(1);
+      }
+    }
+    .game-container {
+      background-color: #57068C;
+      padding: 20px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 150px); /* Define 3 colunas de 150px cada */
+  justify-content: center;  /* Centralize horizontalmente */
+  align-items: center;     /* Centralize verticalmente */
+}
+.tic-tac-toe {
+  display: table;
+  border-collapse: collapse;
+  table-layout: fixed; /* Adicione isso para forçar o layout da tabela */
+  width: 300px; /* Largura total da tabela */
+  margin: 0 auto; /* Centralizar a tabela horizontalmente */
+  margin-top: 20px; /* Adicione um espaço superior para ajustar o layout */
+}
+
+.cell {
+  display: table-cell;
+  width: 150px; /* Largura de cada célula */
+  height: 150px; /* Altura de cada célula */
+  background-color: #FF9000;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 50px;
+  color: #f2fff2;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+}
+
+
+.cell:nth-child(3n) {
+  border-right: none;
+}
+
+.cell:nth-child(n + 7) {
+  border-bottom: none; 
+}
+
+
+    .player-names {
+      background-color: #b305df;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .start-button-green {
+      background-color: #00FF00;
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      display: block;
+      margin: 20px auto;
+      animation: pulse 1s infinite;
+    }
+
+    .player-input {
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #57068C;
+      border-radius: 5px;
+    }
+
+    .player-names h2 {
+      color: #00FF00;
+      font-size: 24px;
+      text-shadow: 2px 2px 2px #000000;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">
+    JOGO DA VELHA
+  </div>
+  <button class="play-button" onclick="startGame()">Play</button>
+  <div class="game-container">
+    <div class="player-names">
+      <h2>jogador x:</h2>
+      <input type="text" id="playerX" class="player-input" placeholder="nome do jogador(a) x">
+      <h2>jogador o:</h2>
+      <input type="text" id="playerO" class="player-input" placeholder="nome do jogador(a) o">
+      <button class="start-button-green" onclick="startTicTacToe()">iniciar jogo</button>
+
+    </div>
+    <div class="options-container">
+    <button class="options-button" onclick="playTwoPlayers()" style="display: none;">2 jogadores</button>
+    </div>
+    <div class="tic-tac-toe-container" style="display: none;">
+      <div class="game-board" id="tic-tac-toe">
+        <!-- Células do tabuleiro aqui... -->
+      <div class="cell" onclick="makeMove(0)"></div>
+      <div class="cell" onclick="makeMove(1)"></div>
+      <div class="cell" onclick="makeMove(2)"></div>
+      <div class="cell" onclick="makeMove(3)"></div>
+      <div class="cell" onclick="makeMove(4)"></div>
+      <div class="cell" onclick="makeMove(5)"></div>
+      <div class="cell" onclick="makeMove(6)"></div>
+      <div class="cell" onclick="makeMove(7)"></div>
+      <div class="cell" onclick="makeMove(8)"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentPlayer = 'X';
+    const board = new Array(9).fill('');
+    function startGame() {
+      document.querySelector('.game-container').style.display = 'block';
+      document.querySelector('.title').style.display = 'none';
+      document.querySelector('.play-button').style.display = 'none';
+    }
+
+    function startTicTacToe() {
+  const playerXName = document.getElementById('playerX').value;
+  const playerOName = document.getElementById('playerO').value;
+
+  if (playerXName && playerOName) {
+    const playerNames = document.querySelector('.player-names');
+    const startButton = document.querySelector('.start-button-green');
+    const ticTacToeContainer = document.querySelector('.tic-tac-toe-container');
+
+    playerNames.style.display = 'none';
+    startButton.style.display = 'none';
+    ticTacToeContainer.style.display = 'block'; // Isso torna o jogo visível.
+  } else {
+    alert('por favor, preencha os nomes de ambos os jogadores.');
+  }
+}
+
+    function makeMove(index) {
+      if (board[index] === '' && !checkWinner()) {
+        board[index] = currentPlayer;
+        document.querySelector(`.cell:nth-child(${index + 1})`).textContent = currentPlayer;
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+    }
+
+    function checkWinner() {
+      const winCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+
+      for (const combination of winCombinations) {
+        const [a, b, c] = combination;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          alert(`Jogador ${board[a]} venceu!`);
+          return true;
+        }
+      }
+
+      if (!board.includes('')) {
+        alert('Empate!');
+        return true;
+      }
+
+      return false;
+    }
+  </script>
+</body>
+</html>
